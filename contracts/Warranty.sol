@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity ^0.8.9;
 
 import "./WarrantyNFT.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -13,7 +13,7 @@ contract Warranty is ReentrancyGuard {
 
     constructor(address _nftContract) public {
         admin = msg.sender;
-        nftContract = NFTWarranty(_nftContract);
+        nftContract = WarrantyNFT(_nftContract);
     }
 
     struct Item {
@@ -26,11 +26,23 @@ contract Warranty is ReentrancyGuard {
     }
     // itemId -> Item
     mapping(uint => Item) public items;
+    // recipient -> Item
+    mapping(address => Item[]) public recipientItems;
 
-    function makeItem(uint serialId, address recipient, uint warrantyDays, string memory warrantyConditionsURL) external nonReentrant {
+    modifier onlyAdmin {
+      require(msg.sender == admin);
+      _;
+    }
+
+    function getItems() public view returns (Item[] memory) {
+        address userAddress = msg.sender;
+        return recipientItems[userAddress];
+    }
+
+    function makeItem(uint serialId, address recipient, uint warrantyDays, string memory warrantyConditionsURL) external onlyAdmin nonReentrant {
         itemCount++;
-        uint tokenId = nftContract.mintNFT(recipient, "https://www.google.com");
-        items[itemCount] = Item (
+        uint tokenId = nftContract.mintNFT(recipient, warrantyConditionsURL);
+        Item memory newItem = Item (
             itemCount,
             tokenId,
             serialId,
@@ -38,5 +50,7 @@ contract Warranty is ReentrancyGuard {
             warrantyDays,
             warrantyConditionsURL
         );
+        items[itemCount] = newItem;
+        recipientItems[recipient].push(newItem);
     }
 }
