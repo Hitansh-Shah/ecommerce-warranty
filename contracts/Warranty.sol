@@ -20,9 +20,12 @@ contract Warranty is ReentrancyGuard {
         uint itemId;
         uint tokenId;
         uint serialId;
+        address admin;
         address recipient;
+        uint issueTime;
         uint warrantyDays;
         string warrantyConditionsURL;
+        uint transfersRemaining;
     }
     // itemId -> Item
     mapping(uint => Item) public items;
@@ -39,16 +42,19 @@ contract Warranty is ReentrancyGuard {
         return recipientItems[userAddress];
     }
 
-    function makeItem(uint serialId, address recipient, uint warrantyDays, string memory warrantyConditionsURL) external onlyAdmin nonReentrant {
+    function makeItem(uint serialId, address recipient, uint warrantyDays, string memory warrantyConditionsURL, uint transfersRemaining) external onlyAdmin nonReentrant {
         itemCount++;
         uint tokenId = nftContract.mintNFT(recipient, warrantyConditionsURL);
         Item memory newItem = Item (
             itemCount,
             tokenId,
             serialId,
+            msg.sender,
             recipient,
+            block.timestamp,
             warrantyDays,
-            warrantyConditionsURL
+            warrantyConditionsURL,
+            transfersRemaining
         );
         items[itemCount] = newItem;
         recipientItems[recipient].push(newItem);
