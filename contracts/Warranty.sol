@@ -20,6 +20,12 @@ contract Warranty is ReentrancyGuard, WarrantyNFT {
         uint sellTime;
     }
 
+    struct Claim {
+        address ownerAddress;
+        uint claimTime;
+        string claimReason;
+    }
+
     struct Item {
         uint itemId;
         uint tokenId;
@@ -37,9 +43,13 @@ contract Warranty is ReentrancyGuard, WarrantyNFT {
         Item[] memory userItems = new Item[](itemCount);
         uint256 counter = 0;
         for(uint i=1; i<=itemCount; i++) {
-            if(items[i].currentOwner == user) {
-                userItems[counter] = items[i];
-                counter++;
+            Item storage item = items[i];
+            if(item.currentOwner == user) {
+                uint numbeOfDays = (block.timestamp - item.issueTime) / 60 / 60 / 24;
+                if (numbeOfDays < item.warrantyDays) {
+                    userItems[counter] = item;
+                    counter++;
+                }  
             }
         }
         Item[] memory result = new Item[](counter);
@@ -50,6 +60,7 @@ contract Warranty is ReentrancyGuard, WarrantyNFT {
     }
 
     mapping(uint => Owner[]) public previousOwners;
+    mapping(uint => Claim[]) public claims;
 
     modifier onlyAdmin {
       require(msg.sender == admin, "Prohibited! Only contract admin can call this transaction.");
@@ -108,5 +119,17 @@ contract Warranty is ReentrancyGuard, WarrantyNFT {
         ));
         item.currentOwner = to;
         item.transfersRemaining--;
+    }
+
+    function claimItem(string memory claimReason, uint itemId) external ownerOfItem(itemId) isExpired(itemId) nonReentrant {
+        claims[itemId].push(Claim (
+            msg.sender,
+            block.timestamp,
+            claimReason
+        ));
+    }
+
+    function getClaims(uint itemId) public view returns (Claim[] memory) {
+        return claims[itemId];
     }
 }
