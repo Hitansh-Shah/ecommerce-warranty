@@ -9,9 +9,17 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 contract Warranty is ReentrancyGuard, WarrantyNFT {
     address public immutable admin; 
     uint public itemCount;
+    uint public immutable pointsThreshold;
+    uint public immutable purchasePoints;
+    uint public immutable redeemPoints;
+    uint public immutable bonusWarrantyDays;
 
-    constructor() {
+    constructor(uint _pointsThreshold, uint _purchasePoints, uint _redeemPoints, uint _bonusWarrantyDays) {
         admin = msg.sender;
+        pointsThreshold = _pointsThreshold;
+        purchasePoints = _purchasePoints;
+        redeemPoints = _redeemPoints;
+        bonusWarrantyDays = _bonusWarrantyDays;
     }
 
     struct Owner {
@@ -38,6 +46,8 @@ contract Warranty is ReentrancyGuard, WarrantyNFT {
     }
     // itemId -> Item
     mapping(uint => Item) public items;
+    // user -> points
+    mapping(address => uint) public userPoints;
 
     function getItemsOfUser(address user) public view returns (Item[] memory) {
         Item[] memory userItems = new Item[](itemCount);
@@ -80,9 +90,11 @@ contract Warranty is ReentrancyGuard, WarrantyNFT {
     }
 
 
-    function makeItem(uint serialId, address recipient, uint warrantyDays, string memory warrantyConditionsURL, uint transfersRemaining) external onlyAdmin nonReentrant {
+    function makeItem(uint serialId, address recipient, uint warrantyDays, string memory warrantyConditionsURL, uint transfersRemaining, bool usePoints) external onlyAdmin nonReentrant {
         itemCount++;
-
+        if (handlePoints(recipient, usePoints)) {
+            warrantyDays += bonusWarrantyDays;
+        }
         uint tokenId = mintNFT(recipient, warrantyConditionsURL);
         Item memory newItem = Item (
             itemCount,
@@ -131,5 +143,19 @@ contract Warranty is ReentrancyGuard, WarrantyNFT {
 
     function getClaims(uint itemId) public view returns (Claim[] memory) {
         return claims[itemId];
+    }
+
+    function handlePoints(address user, bool usePoints) public returns (bool) {
+        uint points = userPoints[user];
+        uint newPoints = points;
+        if (usePoints && points >= pointsThreshold) {
+            newPoints = points-redeemPoints;
+            userPoints[user] = newPoints;
+            return true;
+        } else {
+            newPoints += purchasePoints;
+            userPoints[user] = newPoints;
+            return false;
+        }
     }
 }
