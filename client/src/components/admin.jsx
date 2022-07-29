@@ -1,4 +1,21 @@
+import { makeItem } from '../backend/interact.js'
+import { useContext } from 'react'
+import { WalletAddressContext } from '../App'
 export default function Admin() {
+
+    const handleMint = async (e) => {
+        e.preventDefault()
+        const recipient = document.getElementById("rAddress").value
+        const recipientEmail = document.getElementById("rEmail").value
+        const serialId = document.getElementById("sn").value
+        const warrantyDays = document.getElementById("wd").value
+        const warrantyConditionsURL = document.getElementById("wc").value
+        const transfersRemaining = document.getElementById("transfers").value
+        const usePoints = document.getElementById("points").value
+
+        makeItem(serialId, recipient, warrantyDays, warrantyConditionsURL, transfersRemaining, usePoints)
+    }
+
     return (
         <div className="container mx-auto mt-5">
             <form>
@@ -35,7 +52,7 @@ export default function Admin() {
             </form>
 
             <div className="flex justify-center m-16">
-                <button className="border border-black p-2 w-20 hover:bg-slate-500">
+                <button type="submit" onClick={handleMint} className="border border-black p-2 w-20 hover:bg-slate-500">
                     MINT
                 </button>
             </div>
