@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react"
+import { tranferItem } from "../backend/interact.js"
 import { Modal } from "flowbite-react"
 
-export default function TransferModal({ isTransferExpanded, setIsTransferExpanded }) {
+export default function TransferModal({ itemId, isTransferExpanded, setIsTransferExpanded }) {
+
+    const handleTransfer = async () => {
+        const to = document.getElementById("to").value
+        await tranferItem(to, itemId)
+    }
+
     return (
         <div>
             <Modal
@@ -20,7 +27,7 @@ export default function TransferModal({ isTransferExpanded, setIsTransferExpande
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="flex">
-                        <button className="bg-green-400 p-1 px-3 rounded-lg mr-2">Transfer</button>
+                        <button className="bg-green-400 p-1 px-3 rounded-lg mr-2" onClick={handleTransfer}>Transfer</button>
                         <button className="bg-red-500 p-1 px-3 rounded-lg ml-2" onClick={() => setIsTransferExpanded(false)}>Cancel</button>
                     </div>
                 </Modal.Footer>

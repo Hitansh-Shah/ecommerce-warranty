@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import NftCard from "./nftCard"
 
 const nftCards = [
@@ -159,13 +160,22 @@ const nftCards = [
 ]
 
 
-export default function NftCardList() {
+export default function NftCardList({ userItems }) {
+    // useEffect(() => {
+    //     // console.log(userItems[0])
+    //     const filteredItems = userItems[0][0].filter((item) => {
+    //         return item == userItems[0][0]['currentOwner']
+    //     })
+
+    //     // console.log(filteredItems)
+    //     console.log(userItems[0])
+    // })
     return (
         <div className="flex justify-center flex-wrap">
             {
-                nftCards.map((card, i) => {
+                userItems[0].map((item, i) => {
                     return (
-                        <NftCard key={i} cardData={card}/>
+                        <NftCard key={i} itemData={item}/>
                     )
                 })
             }
