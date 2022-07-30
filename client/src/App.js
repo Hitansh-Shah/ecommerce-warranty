@@ -12,37 +12,30 @@ import { createContext, useContext } from 'react';
 function App() {
   const [isUser, setIsUser] = useState(true)
   const [walletAddress, setWalletAddress] = useState("")
+
+  const loadWallet = async () => {
+    await getCurrentWalletConnected(setWalletAddress)
+    await addWalletListener(setWalletAddress)
+  }
+
   useEffect(() => {
-    getCurrentWalletConnected(setWalletAddress)
-    addWalletListener(setWalletAddress)
+    loadWallet()
   }, [])
+  
   return (
     <div className="App">
       {
         !walletAddress.length ? 
-          <div className='w-full flex justify-center'>
-            <button 
-            onClick={() => {
-              connectWallet(setWalletAddress)
-            }} 
-            className="bg-green-400 p-1 px-3 rounded-lg mr-2"
-            >
-              {
-                walletAddress.length>0 ?
-                `Connected: ${walletAddress.substring(0,5)}...${walletAddress.substring(walletAddress.length - 4).toUpperCase()}` :
-                "Connect"
-              }
-            </button>
-          </div>
-        :
-          <div>
-            <Switcher isUser={isUser} setIsUser={setIsUser}/>
-            <div className='w-full flex justify-center'>
+          <div className='w-full h-96 flex justify-center items-center'>
+            <div className='w-full h-fit'>
+              <div>
+                Please connect to your Metamask wallet in order to proceed...
+              </div>
               <button 
               onClick={() => {
                 connectWallet(setWalletAddress)
               }} 
-              className="bg-green-400 p-1 px-3 rounded-lg mr-2"
+              className="bg-gray-400 p-1 px-3 rounded-lg mr-2 h-10"
               >
                 {
                   walletAddress.length>0 ?
@@ -51,13 +44,27 @@ function App() {
                 }
               </button>
             </div>
-            {
-              isUser ?
-              <User walletAddress={walletAddress}/>
-              :
-              <Admin/>
-            }
-
+          </div>
+        :
+          <div className='mt-10'>
+            <div className='w-full flex justify-center'>
+              <button
+              className="bg-green-400 p-1 px-3 rounded-lg mr-2"
+              >
+                {
+                  `Connected: ${walletAddress.substring(0,5)}...${walletAddress.substring(walletAddress.length - 4).toUpperCase()}`
+                }
+              </button>
+            </div>
+            <div>
+                {
+                  walletAddress.toLowerCase() == "0x3935EdD843311F9D01F7114b3f344C1fa842F83E".toLowerCase() ?
+                    <Admin/>
+                  :
+                    <User walletAddress={walletAddress}/>
+      
+                }
+            </div>
           </div>
       }
     </div>

@@ -9,7 +9,6 @@ export default function Claims({ itemId }) {
     const loadClaims = async () => {
         const data = await getClaims(itemId)
         setClaims(data)
-        console.log(data)
     }
 
     useEffect(() => {
