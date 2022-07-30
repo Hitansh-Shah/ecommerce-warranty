@@ -133,6 +133,14 @@ contract Warranty is ReentrancyGuard, WarrantyNFT {
         item.transfersRemaining--;
     }
 
+    function getLatestIssueTime(uint itemId) public view returns (uint) {
+        if(previousOwners[itemId].length == 0) {
+            return items[itemId].issueTime;
+        } else {
+            return previousOwners[itemId][previousOwners[itemId].length - 1].sellTime;
+        }
+    }
+
     function claimItem(string memory claimReason, uint itemId) external ownerOfItem(itemId) isExpired(itemId) nonReentrant {
         claims[itemId].push(Claim (
             msg.sender,
