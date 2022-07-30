@@ -142,3 +142,20 @@ export const getClaims = async (itemId) => {
         alert("Please install Metamask to use this application")
     }
 }
+
+export const getUserPoints = async (userAddress) => {
+    if(window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const contract = new ethers.Contract(WarrantyAddress, Warranty.abi, provider)
+        try {
+            const data = await contract.userPoints(userAddress)
+            // console.log('data: ', data)
+            return data
+        } catch (err) {
+            console.log('Error: ', err)
+            return null
+        }
+    } else {
+        alert("Please install Metamask to use this application")
+    }
+}
