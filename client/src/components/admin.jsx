@@ -28,12 +28,12 @@ export default function Admin() {
         const usePoints = document.getElementById("points").value
 
         if(recipient && serialId && warrantyDays && warrantyConditionsURL && transfersRemaining) {
-            makeItem(serialId, recipient, warrantyDays, warrantyConditionsURL, transfersRemaining, usePoints)
+            await makeItem(serialId, recipient, warrantyDays, warrantyConditionsURL, transfersRemaining, usePoints)
+            sendEmail()
         } else {
             alert("Please fill the required fields!")
         }
 
-        sendEmail()
     }
 
     return (
