@@ -72,7 +72,9 @@ export default function NftCard({ itemData, walletAddress }) {
                         <span className="font-bold mr-2">Warranty Period :</span>{hexToDex(itemData['warrantyDays']['_hex'])} Days
                     </div>
                     <div className="p-1">
-                        <span className="font-bold mr-2">Warranty Conditions :</span><a className="text-blue-500" href={itemData['warrantyConditionsURL']}>{itemData['warrantyConditionsURL']}</a>
+                        <span className="font-bold mr-2">Warranty Conditions :</span>
+                        <br/>
+                        <a className="text-blue-500" href={itemData['warrantyConditionsURL']}>{itemData['warrantyConditionsURL']}</a>
                     </div>
                     <div className="p-1">
                         <span className="font-bold mr-2">Transfers Remaining :</span>{hexToDex(itemData['transfersRemaining']['_hex'])}
