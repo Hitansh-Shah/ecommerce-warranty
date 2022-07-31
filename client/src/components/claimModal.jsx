@@ -6,6 +6,7 @@ export default function ClaimModal({ itemId, isClaimExpanded, setIsClaimExpanded
     const handleClaim = async () => {
         const claimReason = document.getElementById("claimReason").value
         await claimItem(claimReason, itemId)
+        setIsClaimExpanded(false)
     }
 
     return (

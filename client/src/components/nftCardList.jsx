@@ -160,7 +160,7 @@ const nftCards = [
 ]
 
 
-export default function NftCardList({ userItems }) {
+export default function NftCardList({ userItems,walletAddress }) {
     // useEffect(() => {
     //     // console.log(userItems[0])
     //     const filteredItems = userItems[0][0].filter((item) => {
@@ -175,7 +175,7 @@ export default function NftCardList({ userItems }) {
             {
                 userItems[0].map((item, i) => {
                     return (
-                        <NftCard key={i} itemData={item}/>
+                        <NftCard key={i} itemData={item} walletAddress={walletAddress}/>
                     )
                 })
             }

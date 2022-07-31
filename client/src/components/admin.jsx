@@ -1,7 +1,8 @@
 import { makeItem } from '../backend/interact.js'
 import { useRef } from 'react'
 import emailjs from '@emailjs/browser'
-import { useEffect } from 'react';
+import { Tooltip } from 'flowbite-react'
+import info from '../../public/info.png'
 
 export default function Admin() {
     const makeItemForm = useRef()
@@ -25,7 +26,7 @@ export default function Admin() {
         const warrantyDays = document.getElementById("wd").value
         const warrantyConditionsURL = document.getElementById("wc").value
         const transfersRemaining = document.getElementById("transfers").value
-        const usePoints = document.getElementById("points").value
+        const usePoints = document.getElementById("points").checked
 
         if(recipient && serialId && warrantyDays && warrantyConditionsURL && transfersRemaining) {
             await makeItem(serialId, recipient, warrantyDays, warrantyConditionsURL, transfersRemaining, usePoints)
@@ -67,7 +68,19 @@ export default function Admin() {
                     <input type="number" required={true} min="0" id="transfers" name="transfersRemaining" placeholder="3" className="border border-black p-2 ml-4 w-96"/>
                 </div>
                 <div className="m-5 flex justify-center flex-wrap items-center">
-                    <label htmlFor="points" className="w-96">Use points</label>
+                    <label htmlFor="points" className="w-96">
+                        <div className='flex justify-center items-center'>
+                            Use Points
+                            <Tooltip placement='bottom' content={
+                                <div>
+                                    <div>Purchase Points: 20, Redeem Points: 100, Threshold Points: 100</div>
+                                    <div>If eligible, user will get extra warranty of 100 days</div>
+                                </div>
+                            } >
+                                <img src={info} className="ml-1"/>
+                            </Tooltip>
+                        </div>
+                    </label>
                     <div className="flex justify-center lg:justify-start lg:ml-4 w-96">
                         <input type="checkbox" required={true} id="points" name="points" placeholder="3" />
                     </div>

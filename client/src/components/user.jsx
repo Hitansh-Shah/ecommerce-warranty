@@ -31,7 +31,7 @@ export default function User({ walletAddress }) {
             </div>
             <div>
                 <span className="font-bold mr-2">Loyalty Points: </span> {
-                    userPoints ?
+                    !(userPoints == null) ?
                     userPoints:
                     'Loading...'
                 }
@@ -40,7 +40,7 @@ export default function User({ walletAddress }) {
                 !userItems ?
                 <div className="m-8">Loading...</div>
                 :
-                <NftCardList userItems={[userItems]}/>
+                <NftCardList userItems={[userItems]} walletAddress={walletAddress}/>
             }
         </div>
     )
