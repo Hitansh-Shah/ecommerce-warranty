@@ -7,7 +7,7 @@ import TransferModal from "./transferModal"
 import ClaimModal from "./claimModal"
 import { useEffect } from "react"
 
-export default function NftCard({ itemData }) {
+export default function NftCard({ itemData, walletAddress }) {
     const [isExpanded, setIsExpanded] = useState(false)
     const [isTransferExpanded, setIsTransferExpanded] = useState(false)
     const [isClaimExpanded, setIsClaimExpanded] = useState(false)
@@ -72,6 +72,9 @@ export default function NftCard({ itemData }) {
                         <span className="font-bold mr-2">Warranty Period :</span>{hexToDex(itemData['warrantyDays']['_hex'])} Days
                     </div>
                     <div className="p-1">
+                        <span className="font-bold mr-2">Warranty Conditions :</span><a className="text-blue-500" href={itemData['warrantyConditionsURL']}>{itemData['warrantyConditionsURL']}</a>
+                    </div>
+                    <div className="p-1">
                         <span className="font-bold mr-2">Transfers Remaining :</span>{hexToDex(itemData['transfersRemaining']['_hex'])}
                     </div>
                     <div className="p-1">
@@ -90,10 +93,10 @@ export default function NftCard({ itemData }) {
                         <Claims itemId={itemId}/>
                     </div>
                     <div className="flex justify-center p-4">
-                        <button className=" border border-black hover:bg-teal-500 p-1 px-3 rounded-xl m-4" onClick={handleOnTranfer}>
+                        <button className={`border ${hexToDex(itemData['transfersRemaining']['_hex']) ? 'hover:bg-teal-500 border-black' : 'text-gray-400 border-gray-400 cursor-default'} p-1 px-3 rounded-xl m-4`} onClick={hexToDex(itemData['transfersRemaining']['_hex']) ? handleOnTranfer : null}>
                             Transfer
                         </button>
-                        <TransferModal itemId={itemId} isTransferExpanded={isTransferExpanded} setIsTransferExpanded={setIsTransferExpanded}/>
+                        <TransferModal itemId={itemId} isTransferExpanded={isTransferExpanded} setIsTransferExpanded={setIsTransferExpanded} itemData={itemData} walletAddress={walletAddress}/>
                         <button className=" border border-black hover:bg-teal-500 p-1 px-3 rounded-xl m-4" onClick={handleOnClaim}>
                             Claim
                         </button>
